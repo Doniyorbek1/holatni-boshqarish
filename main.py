@@ -5,7 +5,7 @@ from settings_bot import settings_router
 from handlers import main_router
 from middlewares import SystemLoggingMiddleware
 
-BOT_TOKEN = "SIZNING_BOT_TOKENINGIZ_SHU_YERDA"
+BOT_TOKEN = "5676600520:AAGz6EU7z2dESvhrZG6Rq59VpPwMklIQmyM"
 
 # 1. Jurnallashtirish (Logging) konfiguratsiyasi
 logging.basicConfig(

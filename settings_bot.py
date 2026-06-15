@@ -131,8 +131,20 @@ async def process_action_description(message: types.Message, state: FSMContext):
 @settings_router.message(SetupFSM.waiting_for_action_url)
 async def process_action_url(message: types.Message, state: FSMContext):
     user_id = message.from_user.id
-    url = message.text.strip()
+    raw_url = message.text.strip()
     
+    # ================= AVTOMATIK FORMATLASH =================
+    if raw_url.startswith("@"):
+        # Agar @Botfaz kiritilsa -> https://t.me/Botfaz
+        url = f"https://t.me/{raw_url[1:]}"
+    elif not raw_url.startswith(("http://", "https://")):
+        # Agar shunchaki youtube.com kiritilsa -> https://youtube.com
+        url = f"https://{raw_url}"
+    else:
+        # Agar manzil to'g'ri (https://...) kiritilgan bo'lsa, o'zgarishsiz qoladi
+        url = raw_url
+    # =========================================================
+
     user_data = await state.get_data()
     mood_name = user_data["current_mood"]
     desc = user_data["current_desc"]
@@ -145,8 +157,16 @@ async def process_action_url(message: types.Message, state: FSMContext):
         [InlineKeyboardButton(text="Yana harakat qo'shish ➕", callback_data=f"edit_{mood_name}")],
         [InlineKeyboardButton(text="Bosh menyu 🔙", callback_data="set_back_main")]
     ])
-    await message.answer("Harakat va havola muvaffaqiyatli saqlandi. Keyingi amalni tanlang:", reply_markup=kb)
-
+    
+    # Foydalanuvchiga qanday saqlanganini ko'rsatish
+    await message.answer(
+        f"✅ Saqlandi!\n\n"
+        f"📝 Harakat: {desc}\n"
+        f"🔗 Havola: {url}\n\n"
+        f"Keyingi amalni tanlang:", 
+        reply_markup=kb,
+        disable_web_page_preview=True
+    )
 # ================= NAVIGATSIYA =================
 
 @settings_router.callback_query(F.data == "set_back_main")
