@@ -1,7 +1,10 @@
 import json
 import os
+import logging
 
 JSON_FILE = "mood_data.json"
+# Ma'lumotlar bazasi uchun maxsus logger obyekti
+db_logger = logging.getLogger("Database")
 
 def load_all_data():
     """Barcha foydalanuvchilar ma'lumotlarini xotiraga yuklash."""
@@ -17,6 +20,7 @@ def save_all_data(data):
     """Barcha ma'lumotlarni JSON faylga yozish."""
     with open(JSON_FILE, 'w', encoding='utf-8') as file:
         json.dump(data, file, ensure_ascii=False, indent=4)
+    db_logger.info("Global o'zgarish: Ma'lumotlar JSON faylga muvaffaqiyatli yozildi.")
 
 def get_user_data(user_id: int) -> dict:
     """Aniq foydalanuvchi identifikatori bo'yicha ma'lumotlarni olish."""
@@ -27,7 +31,8 @@ def get_user_data(user_id: int) -> dict:
     return data[user_id_str]
 
 def save_user_data(user_id: int, user_data: dict):
-    """Aniq foydalanuvchi identifikatori bo'yicha ma'lumotlarni yangilash."""
+    """Aniq foydalanuvchi identifikatori bo'yicha ma'lumotlarni yangilash va ro'yxatga olish."""
     data = load_all_data()
     data[str(user_id)] = user_data
     save_all_data(data)
+    db_logger.info(f"Obyekt yangilandi: UserID={user_id} ga tegishli ma'lumotlar bazaga saqlandi.")
