@@ -26,3 +26,22 @@ logging.basicConfig(
 logger = logging.getLogger("MainSystem")
 
 # Qolgan funksiyalar (async def main()...) o'zgarishsiz qoladi
+async def main():
+    bot = Bot(token=BOT_TOKEN)
+    dp = Dispatcher()
+    
+    # 2. Oraliq dasturni (Middleware) ro'yxatdan o'tkazish
+    # Bu barcha marshrutlardan oldin ishga tushadi
+    dp.update.outer_middleware(SystemLoggingMiddleware())
+    
+    # 3. Routerlarni biriktirish
+    dp.include_router(settings_router)
+    dp.include_router(main_router)
+    
+    logger.info("Tizim jarayonlari initsializatsiya qilindi. So'rovlar kutilmoqda (Polling amalda)...")
+    await bot.delete_webhook(drop_pending_updates=True)
+    await dp.start_polling(bot)
+
+if __name__ == "__main__":
+    asyncio.run(main())
+    
