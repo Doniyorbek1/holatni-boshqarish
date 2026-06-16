@@ -205,4 +205,13 @@ pip-selfcheck.json
 .ionide
 
 # End of https://www.toptal.com/developers/gitignore/api/python,visualstudiocode,venv
+mood_data.json\
+# Muhit o'zgaruvchilari va maxfiy ma'lumotlar
+.env
+
+# Shaxsiy ma'lumotlar bazasi fayli
 mood_data.json
+
+# Python kesh fayllari
+__pycache__/
+*.pyc
